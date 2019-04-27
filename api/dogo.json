@@ -1,0 +1,9 @@
+{
+  "WorkingDir": "{PWD}",
+  "SourceDir": [
+    "{PWD}"
+  ],
+  "SourceExt": [".go", ".yml", ".html"],
+  "BuildCmd": "go build -o bin/api cmd/api/main.go",
+  "RunCmd": "./bin/api"
+}

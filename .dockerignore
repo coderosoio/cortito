@@ -1,0 +1,14 @@
+.vscode
+.dockerignore
+.gitignore
+
+bin
+docker
+
+*.out
+*.db
+*.log
+
+config*.yml
+
+jwt.pem*

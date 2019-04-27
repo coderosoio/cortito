@@ -1,0 +1,9 @@
+{
+  "WorkingDir": "{PWD}",
+  "SourceDir": [
+    "{PWD}"
+  ],
+  "SourceExt": [".go", ".yml"],
+  "BuildCmd": "go build -o bin/shortener cmd/shortener/main.go",
+  "RunCmd": "./bin/shortener"
+}

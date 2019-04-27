@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package account;
+
+service User {
+  rpc CreateUser(UserRequest) returns (UserResponse);
+  rpc UpdateUser(UserRequest) returns (UserResponse);
+  rpc FindUser(UserRequest) returns (UserResponse);
+  rpc UserExists(UserRequest) returns (UserExistResponse);
+}
+
+service Auth {
+  rpc CreateToken (AuthRequest) returns (AuthResponse);
+  rpc VerifyToken (VerifyTokenRequest) returns (VerifyTokenResponse);
+  rpc RevokeToken (RevokeTokenRequest) returns (RevokeTokenResponse);
+}
+
+message UserRequest {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  string password = 4;
+  string password_confirmation = 5;
+}
+
+message UserResponse {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  string created_at = 4;
+  string updated_at = 5;
+}
+
+message UserExistResponse {
+  bool exists = 1;
+}
+
+message AuthRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string token = 1;
+  UserResponse user = 2;
+}
+
+message VerifyTokenRequest {
+  string token = 1;
+}
+
+message VerifyTokenResponse {
+  string token = 1;
+  UserResponse user = 2;
+}
+
+message RevokeTokenRequest {
+  string token = 1;
+}
+
+message RevokeTokenResponse {
+}
