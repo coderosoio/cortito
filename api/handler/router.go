@@ -15,6 +15,7 @@ func NewRouter(options *option.Options) *gin.Engine {
 
 	userHandler := NewUserHandler(options)
 	authHandler := NewAuthHandler(options)
+	linkHandler := NewLinkHandler(options)
 
 	api := router.Group("/api")
 	{
@@ -23,13 +24,21 @@ func NewRouter(options *option.Options) *gin.Engine {
 			user := account.Group("/users")
 			{
 				user.POST("/", userHandler.Create)
-				user.PUT("/:id", userHandler.Update)
+				user.PUT("/:id", requireToken, userHandler.Update)
 				user.GET("/:id", requireToken, userHandler.Find)
 			}
 			auth := account.Group("/auth")
 			{
 				auth.POST("/", authHandler.CreateToken)
 				auth.DELETE("/", requireToken, authHandler.RevokeToken)
+			}
+		}
+		shortener := api.Group("/shortener")
+		{
+			link := shortener.Group("/links")
+			{
+				link.GET("/", requireToken, linkHandler.Index)
+				link.POST("/", requireToken, linkHandler.Create)
 			}
 		}
 	}

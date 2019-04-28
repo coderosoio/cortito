@@ -4,6 +4,9 @@ TEST := `go list ./... | awk '!/cmd/ && !/model/ && !/proto/'`
 build: proto
 	go build ${LDFLAGS} -o bin/shortener cmd/shortener/main.go
 
+run:
+	dogo
+
 proto:
 	protoc --proto_path=. \
 				 --micro_out=. \

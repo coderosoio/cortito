@@ -55,7 +55,7 @@ func main() {
 
 	httpConfig := config.HTTP
 	if httpConfig == nil {
-		log.Fatal("no http configuration for web")
+		log.Fatal("no http configuration for web_tmp")
 	}
 
 	accountService := config.Service["account"]

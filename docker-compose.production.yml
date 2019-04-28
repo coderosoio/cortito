@@ -2,11 +2,12 @@ version: "3"
 
 services:
   api:
-    build:
-      context: .
-      dockerfile: ./docker/api/Dockerfile
+    image: coderoso/cortito_api
     hostname: cortito-api
     restart: always
+    volumes:
+      - ./api/config.yml:/cortito/config.yml
+      - ./api/config.${APP_ENV:-development}.yml:/cortito/config.${APP_ENV:-development}.yml
     env_file:
       - .env
     depends_on:
@@ -15,28 +16,45 @@ services:
       - cortito-api
 
   account:
-    build:
-      context: .
-      dockerfile: ./docker/account/Dockerfile
+    image: coderoso/cortito_account
     hostname: cortito-account
     restart: always
+    volumes:
+      - ./account/config.yml:/cortito/config.yml
+      - ./account/config.${APP_ENV:-development}.yml:/cortito/config.${APP_ENV:-development}.yml
     env_file:
       - .env
     depends_on:
       - postgres-account
-      - consul
+      # - consul
 
   shortener:
-    build:
-      context: .
-      dockerfile: ./docker/shortener/Dockerfile
+    image: coderoso/cortito_shortener
     hostname: cortito-shortener
     restart: always
+    volumes:
+      - ./shortener/config.yml:/cortito/config.yml
+      - ./shortener/config.${APP_ENV:-development}.yml:/cortito/config.${APP_ENV:-development}.yml
     env_file:
       - .env
     depends_on:
       - consul
       - postgres-shortener
+
+  #  web_tmp:
+  #    build:
+  #      context: .
+  #      dockerfile: docker/web_tmp/Dockerfile
+  #    hostname: cortito
+  #    restart: always
+  #    volumes:
+  #      - .:/cortito
+  #    env_file:
+  #      - .env
+  #    depends_on:
+  #      - consul
+  #      - account
+  #      - shortener
 
   nginx:
     image: cortito_nginx:latest
