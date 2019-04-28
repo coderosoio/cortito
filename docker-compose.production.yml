@@ -1,0 +1,129 @@
+version: "3"
+
+services:
+  api:
+    image: coderoso/cortito_api
+    hostname: cortito-api
+    restart: always
+    volumes:
+      - ./api/config.yml:/cortito/config.yml
+      - ./api/config.${APP_ENV:-development}.yml:/cortito/config.${APP_ENV:-development}.yml
+    env_file:
+      - .env
+    depends_on:
+      - account
+      - shortener
+      - cortito-api
+
+  account:
+    image: coderoso/cortito_account
+    hostname: cortito-account
+    restart: always
+    volumes:
+      - ./account/config.yml:/cortito/config.yml
+      - ./account/config.${APP_ENV:-development}.yml:/cortito/config.${APP_ENV:-development}.yml
+    env_file:
+      - .env
+    depends_on:
+      - postgres-account
+      # - consul
+
+  shortener:
+    image: coderoso/cortito_shortener
+    hostname: cortito-shortener
+    restart: always
+    volumes:
+      - ./shortener/config.yml:/cortito/config.yml
+      - ./shortener/config.${APP_ENV:-development}.yml:/cortito/config.${APP_ENV:-development}.yml
+    env_file:
+      - .env
+    depends_on:
+      - consul
+      - postgres-shortener
+
+  #  web_tmp:
+  #    build:
+  #      context: .
+  #      dockerfile: docker/web_tmp/Dockerfile
+  #    hostname: cortito
+  #    restart: always
+  #    volumes:
+  #      - .:/cortito
+  #    env_file:
+  #      - .env
+  #    depends_on:
+  #      - consul
+  #      - account
+  #      - shortener
+
+  nginx:
+    image: cortito_nginx:latest
+    hostname: nginx
+    container_name: api-nginx
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - cortito-api
+
+  postgres-account:
+    image: postgres:latest
+    hostname: postgres-account
+    restart: always
+    volumes:
+      - postgres-account:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${ACCOUNT_DB_NAME:-cortito_account}
+
+  postgres-shortener:
+    image: postgres:latest
+    hostname: postgres-shortener
+    restart: always
+    volumes:
+      - postgres-shortener:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${SHORTENER_DB_NAME:-cortito_shortener}
+
+  consul:
+    image: progrium/consul:latest
+    command: -server -bootstrap -rejoin
+    hostname: consul
+    restart: always
+    ports:
+      - "8300:8300"
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:53/udp"
+
+  micro-web:
+    image: microhq/micro
+    command: web_tmp --namespace=io.coderoso.cortito
+    hostname: micro-web_tmp
+    restart: always
+    ports:
+      - "8082:8082"
+    env_file:
+      - .env
+    depends_on:
+      - consul
+
+  cortito-api:
+    image: microhq/micro
+    command: api --handler=http --namespace=io.coderoso.cortito --resolver=micro
+    hostname: cortito-api
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - consul
+
+volumes:
+  postgres-account:
+  postgres-shortener:

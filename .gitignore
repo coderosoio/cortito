@@ -13,7 +13,7 @@
 config*.yml
 
 bin
-web
+web_tmp
 
 jwt.pem*
 
@@ -21,3 +21,5 @@ jwt.pem*
 *bz2
 
 coverage.html
+
+frontend/node_modules

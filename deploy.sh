@@ -2,47 +2,46 @@
 
 readonly app=cortito
 
-readonly account_image=cortito_account:latest
-readonly shortener_image=cortito_shortener:latest
-readonly api_image=cortito_api:latest
-
-readonly nginx_image=cortito_nginx:latest
-readonly nginx_dockerfile=./docker/nginx/Dockerfile
-
 readonly bzip_file=${app}-latest.tar.bz2
 
 readonly app_key="~/.ssh/id_rsa"
 readonly app_user="core@coderoso.io"
 
-readonly images=('account' 'shortener' 'api')
-
 clear
 
 echo "Building app and images..."
-docker rmi -f ${nginx_image} 2>/dev/null
-docker build --no-cache -t ${nginx_image} -f ./docker/nginx/Dockerfile .
-for image in "${images[@]}"; do
-  docker rmi -f ${image}:latest 2>/dev/null
-  docker build --no-cache -t ${image}:latest -f ./${image}/docker/${image}/Dockerfile .
-done
+docker rmi -f coderoso/cortito_nginx 2>/dev/null
+docker rmi -f coderoso/cortito_account:latest 2>/dev/null
+docker rmi -f coderoso/cortito_shortener:latest 2>/dev/null
+docker rmi -f coderoso/cortito_api:latest 2>/dev/null
+
+docker build -t coderoso/cortito_nginx -f ./docker/nginx/Dockerfile .
+docker build -t coderoso/cortito_account -f ./account/docker/account/Dockerfile .
+docker build -t coderoso/cortito_shortener -f ./shortener/docker/shortener/Dockerfile .
+docker build -t coderoso/cortito_api -f ./shortener/docker/shortener/Dockerfile .
 
 echo "Saving images..."
-docker save ${images[@]} | bzip2 > ${bzip_file}
+docker save coderoso/cortito_nginx coderoso/cortito_account coderoso/cortito_shortener coderoso/cortito_api | bzip2 > ${bzip_file}
 
 echo "Uploading docker images..."
-scp -i ${app_key} ${bzip_file} docker-compose.yml .env.production ${app_user}:/home/core/apps/cortito
-for image in ${images[@]}; do
-  scp -i ${app_key} ${image}/config.yml ${image}/config.production.yml ${app_user}:/home/core/apps/cortito/${image}/
-done
+scp -i ${app_key} ${bzip_file} docker-compose.production.yml .env.production ${app_user}:/home/core/apps/cortito
+scp -i ${app_key} ./account/config.yml ./account/config.production.yml ${app_user}:/home/core/apps/cortito/acount/
+scp -i ${app_key} ./shortener/config.yml ./shortener/config.production.yml ${app_user}:/home/core/apps/cortito/shortener/
+scp -i ${app_key} ./api/config.yml ./api/config.production.yml ${app_user}:/home/core/apps/cortito/api/
 
 ssh -T -i ${app_key} ${app_user} << ENDSSH
 cd /home/core/apps/cortito
+
 cp .env.production .env
-docker rmi ${nginx_image} 2>/dev/null
-for image in ${images[@]}; do
-  docker rmi ${image} 2>/dev/null
-done
+
+docker rmi -f coderoso/cortito_nginx 2>/dev/null
+docker rmi -f coderoso/cortito_account:latest 2>/dev/null
+docker rmi -f coderoso/cortito_shortener:latest 2>/dev/null
+docker rmi -f coderoso/cortito_api:latest 2>/dev/null
+
 bunzip2 --stdout ${bzip_file} | docker load
+
 rm ${bzip_file}
+
 docker-compose down && docker-compose up -d --force-recreate
 ENDSSH
