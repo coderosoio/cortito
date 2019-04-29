@@ -4,12 +4,24 @@
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
+    "bootstrap": "^4.3.1",
     "deepmerge": "^3.2.0",
+    "humanize": "^0.0.9",
+    "humps": "^2.0.1",
     "immutable": "^4.0.0-rc.12",
+    "node-sass": "^4.12.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-redux": "^7.0.3",
+    "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.0",
+    "reactstrap": "^8.0.0",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-promise": "^0.6.0",
     "redux-thunk": "^2.3.0",
+    "store": "^2.0.12",
+    "underscore": "^1.9.1",
     "validate.js": "^0.12.0"
   },
   "scripts": {
@@ -34,6 +46,8 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.4.4"
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "eslint-config-react-app": "^4.0.0",
+    "eslint-plugin-react": "^7.12.4"
   }
 }

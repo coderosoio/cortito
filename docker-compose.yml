@@ -1,12 +1,35 @@
 version: "3"
 
 services:
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/frontend/Dockerfile
+    hostname: frontend
+    restart: always
+    volumes:
+      - ./frontend/src:/cortito/frontend/src
+      - ./frontend/public:/cortito/frontend/public
+      - ./frontend/.env:/cortito/frontend/.env
+    env_file:
+      - .env
+    depends_on:
+      - cortito-api
+    ports:
+      - "4000:4000"
+      - "35729:35729"
+
   api:
     build:
       context: .
       dockerfile: ./docker/api/Dockerfile
-    hostname: cortito-api
+    hostname: api
     restart: always
+    volumes:
+      - ./api:/cortito/api
+      - ./common:/cortito/common
+      - ./account:/cortito/account
+      - ./shortener:/cortito/shortener
     env_file:
       - .env
     depends_on:
@@ -18,8 +41,11 @@ services:
     build:
       context: .
       dockerfile: ./docker/account/Dockerfile
-    hostname: cortito-account
+    hostname: account
     restart: always
+    volumes:
+      - ./account:/cortito/account
+      - ./common:/cortito/common
     env_file:
       - .env
     depends_on:
@@ -30,24 +56,33 @@ services:
     build:
       context: .
       dockerfile: ./docker/shortener/Dockerfile
-    hostname: cortito-shortener
+    hostname: shortener
     restart: always
+    volumes:
+      - ./shortener:/cortito/shortener
+      - ./common:/cortito/common
     env_file:
       - .env
     depends_on:
       - consul
       - postgres-shortener
 
-  nginx:
-    image: cortito_nginx:latest
-    hostname: nginx
-    container_name: api-nginx
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/web/Dockerfile
+    hostname: web
     restart: always
-    ports:
-      - 80:80
-      - 443:443
+    volumes:
+      - ./web:/cortito/web
+      - ./shortener:/cortito/shortener
+      - ./common:/cortito/common
+    env_file:
+      - .env
     depends_on:
-      - cortito-api
+      - shortener
+    ports:
+      - "3000:3000"
 
   postgres-account:
     image: postgres:latest
@@ -84,8 +119,8 @@ services:
 
   micro-web:
     image: microhq/micro
-    command: web_tmp --namespace=io.coderoso.cortito
-    hostname: micro-web_tmp
+    command: web --namespace=io.coderoso.cortito
+    hostname: micro-web
     restart: always
     ports:
       - "8082:8082"

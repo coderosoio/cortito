@@ -4,10 +4,13 @@ import "fmt"
 
 // HTTP holds configuration for HTTP.
 type HTTP struct {
-	Hostname   string      `default:""`
-	Port       int         `default:"3000"`
-	IsSecure   bool        `yaml:"is_secure" default:"false"`
-	SecureHTTP *SecureHTTP `yaml:"secure_http"`
+	Hostname       string      `default:""`
+	Port           int         `default:"3000"`
+	IsSecure       bool        `yaml:"is_secure" default:"false"`
+	AllowedHosts   []string    `yaml:"allowed_hosts"`
+	AllowedMethods []string    `yaml:"allowed_methods"`
+	AllowedHeaders []string    `yaml:"allowed_headers"`
+	SecureHTTP     *SecureHTTP `yaml:"secure_http"`
 }
 
 // SecureHTTP holds configuration for HTTPS.

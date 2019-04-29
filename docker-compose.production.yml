@@ -1,9 +1,20 @@
 version: "3"
 
 services:
+  frontend:
+    image: coderoso/cortito_frontend
+    hostname: frontend
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - cortito-api
+    volumes:
+      - frontend:/cortito/frontend
+
   api:
     image: coderoso/cortito_api
-    hostname: cortito-api
+    hostname: api
     restart: always
     volumes:
       - ./api/config.yml:/cortito/config.yml
@@ -11,6 +22,7 @@ services:
     env_file:
       - .env
     depends_on:
+      - consul
       - account
       - shortener
       - cortito-api
@@ -26,7 +38,7 @@ services:
       - .env
     depends_on:
       - postgres-account
-      # - consul
+      - consul
 
   shortener:
     image: coderoso/cortito_shortener
@@ -41,26 +53,26 @@ services:
       - consul
       - postgres-shortener
 
-  #  web_tmp:
-  #    build:
-  #      context: .
-  #      dockerfile: docker/web_tmp/Dockerfile
-  #    hostname: cortito
-  #    restart: always
-  #    volumes:
-  #      - .:/cortito
-  #    env_file:
-  #      - .env
-  #    depends_on:
-  #      - consul
-  #      - account
-  #      - shortener
+  web:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+    hostname: cortito
+    restart: always
+    volumes:
+      - .:/cortito
+    env_file:
+      - .env
+    depends_on:
+      - shortener
 
   nginx:
     image: cortito_nginx:latest
     hostname: nginx
     container_name: api-nginx
     restart: always
+    volumes:
+      - frontend:/cortito/frontend
     ports:
       - 80:80
       - 443:443
@@ -88,6 +100,15 @@ services:
       - .env
     environment:
       POSTGRES_DB: ${SHORTENER_DB_NAME:-cortito_shortener}
+
+  certbot:
+    image: certbot/certbot
+    hostname: certbot
+    container_name: certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
 
   consul:
     image: progrium/consul:latest
@@ -127,3 +148,4 @@ services:
 volumes:
   postgres-account:
   postgres-shortener:
+  frontend:

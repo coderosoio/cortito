@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"log"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	"api/middleware"
@@ -10,6 +13,21 @@ import (
 func NewRouter(options *option.Options) *gin.Engine {
 	router := gin.Default()
 	router.RedirectTrailingSlash = true
+
+	log.Printf("AllowedHeaders: %+v", options.AllowedHeaders)
+	log.Printf("AllowedMethods: %+v", options.AllowedMethods)
+	router.Use(cors.New(cors.Config{
+		AllowAllOrigins: true,
+		AllowHeaders:    options.AllowedHeaders,
+		AllowMethods:    options.AllowedMethods,
+		ExposeHeaders: []string{
+			"Content-Type",
+			"Content-Length",
+			"Access-Control-Allow-Headers",
+			"Access-Control-Allow-Methods",
+		},
+		AllowCredentials: true,
+	}))
 
 	requireToken := middleware.RequireToken(options.AuthService)
 

@@ -31,6 +31,7 @@ func main() {
 
 		errc = make(chan error)
 	)
+
 	service := web.NewService(
 		web.Name(ServiceName),
 		web.Version(Version),
@@ -47,6 +48,10 @@ func main() {
 		web.RegisterInterval(10*time.Second),
 	)
 	_ = service.Init()
+
+	if err := commonConfig.SetConfigurationFile(configurationFile); err != nil {
+		log.Fatalf("error setting configuration file: %v", err)
+	}
 
 	config, err := commonConfig.GetConfig()
 	if err != nil {
@@ -69,6 +74,9 @@ func main() {
 		option.WithUserService(userService),
 		option.WithAuthService(authService),
 		option.WithLinkService(linkService),
+		option.WithAllowedHosts(httpConfig.AllowedHosts),
+		option.WithAllowedMethods(httpConfig.AllowedMethods),
+		option.WithAllowedHeaders(httpConfig.AllowedHeaders),
 	)
 
 	router := handler.NewRouter(options)

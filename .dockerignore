@@ -5,6 +5,8 @@
 bin
 docker
 
+frontend/node_modules
+
 *.out
 *.db
 *.log

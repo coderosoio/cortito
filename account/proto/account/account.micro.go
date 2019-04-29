@@ -26,11 +26,12 @@ import math "math"
 
 import (
 	context "context"
+
 	client "github.com/micro/go-micro/client"
 	server "github.com/micro/go-micro/server"
 )
 
-// Reference imports to suppress errors if they are not otherwise used.
+// Reference imports to suppress errors.js if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
@@ -41,7 +42,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Reference imports to suppress errors if they are not otherwise used.
+// Reference imports to suppress errors.js if they are not otherwise used.
 var _ context.Context
 var _ client.Option
 var _ server.Option

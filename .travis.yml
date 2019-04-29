@@ -1,8 +1,4 @@
 language: go
 
-services:
-  - consul
-
 go:
-  - 1.12
-
+  - "1.12"

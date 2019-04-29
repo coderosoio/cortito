@@ -2,8 +2,6 @@ module shortener
 
 go 1.12
 
-replace common => ../common
-
 require (
 	common v0.0.0-00010101000000-000000000000
 	github.com/armon/circbuf v0.0.0-20190214190532-5111143e8da2 // indirect
@@ -20,3 +18,5 @@ require (
 	github.com/thoas/go-funk v0.4.0 // indirect
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 )
+
+replace common => ../common

@@ -1,0 +1,36 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "globalReturn": true,
+      "generators": true,
+      "objectLiteralDuplicateProperties": false,
+      "experimentalObjectRestSpread": true,
+      "jsx": true,
+      "classes": true
+    },
+    "sourceType": "module"
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin/react:recommended"
+  ],
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "settings": {
+    "import/resolve": {
+      "moduleDirectory": ["node_modules", "src"]
+    }
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "semi": "off",
+    "no-console": "off"
+  }
+}
