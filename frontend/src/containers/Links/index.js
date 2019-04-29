@@ -6,8 +6,7 @@ import {
   Button,
   Modal,
   ModalHeader,
-  ModalBody,
-  ModalFooter,
+  ModalBody
 } from 'reactstrap'
 
 import LinksList from 'components/LinksList'

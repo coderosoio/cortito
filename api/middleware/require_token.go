@@ -33,6 +33,8 @@ func RequireToken(authService accountProto.AuthService) gin.HandlerFunc {
 				})
 				return
 			}
+			ctx.Set("token", token)
+			ctx.Keys["token"] = token
 			req := &accountProto.VerifyTokenRequest{
 				Token: token,
 			}
@@ -44,8 +46,8 @@ func RequireToken(authService accountProto.AuthService) gin.HandlerFunc {
 				})
 				return
 			}
-			ctx.Set("token", res.Token)
 			ctx.Set("user", res.User)
+
 		default:
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"status": http.StatusUnauthorized,

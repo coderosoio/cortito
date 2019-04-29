@@ -1,4 +1,4 @@
-import { Record, List } from 'immutable'
+import { Record } from 'immutable'
 
 const Form = Record({
   disabled: false,

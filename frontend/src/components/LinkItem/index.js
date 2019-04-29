@@ -21,8 +21,8 @@ export default class LinkItem extends Component {
     const { link } = this.props
     return (
       <tr>
-        <td><a href={linksService.shortenedLink(link.hash)} target="_blank">{link.hash}</a></td>
-        <td><a href={link.url} target="_blank">{link.url}</a></td>
+        <td><a href={linksService.shortenedLink(link.hash)} target="_blank" rel="noopener noreferrer">{link.hash}</a></td>
+        <td><a href={link.url} target="_blank" rel="noopener noreferrer">{link.url}</a></td>
         <td>{link.visits || 0}</td>
         <td>{link.lastVisit || 'Not visited yet'}</td>
         <td>{link.createdAt}</td>

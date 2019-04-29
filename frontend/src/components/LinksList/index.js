@@ -19,7 +19,7 @@ const mapDispatchToProps = dispatch => ({
 
 class LinksList extends Component {
   static propTypes = {
-    links: PropTypes.array.isRequired,
+    links: PropTypes.array,
     actions: PropTypes.shape({
       listLinks: PropTypes.func.isRequired
     })
@@ -42,7 +42,7 @@ class LinksList extends Component {
       </tr>
     )
 
-    if (links.length > 0) {
+    if (links && links.length > 0) {
       linkItems = links.map(link => (
         <LinkItem key={link.id} link={link} />
       ))

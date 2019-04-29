@@ -12,8 +12,10 @@ import (
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/server"
 
+	"common/auth"
 	"common/config"
 	"common/connection"
+	commonWrapper "common/wrapper"
 	proto "shortener/proto/shortener"
 
 	"shortener/handler"
@@ -49,9 +51,6 @@ func main() {
 		micro.RegisterInterval(10*time.Second),
 	)
 	service.Init()
-	_ = service.Server().Init(
-		server.Wait(true),
-	)
 
 	if err := config.SetConfigurationFile(configurationFile); err != nil {
 		log.Fatalf("error setting configuration file: %v", err)
@@ -67,6 +66,12 @@ func main() {
 
 	linkRepository := repository.NewLinkRepository(db)
 
+	// Auth strategy
+	authStrategy, err := auth.NewAuthStrategy()
+	if err != nil {
+		log.Fatalf("error getting auth strategy: %v", err)
+	}
+
 	options := option.NewOptions(
 		option.WithLinkRepository(linkRepository),
 	)
@@ -76,6 +81,13 @@ func main() {
 	if err := proto.RegisterLinkHandler(service.Server(), linkHandler); err != nil {
 		log.Fatal(err)
 	}
+
+	_ = service.Server().Init(
+		server.WrapHandler(
+			commonWrapper.NewAuthHandlerWrapper(authStrategy),
+		),
+		server.Wait(true),
+	)
 
 	go func() {
 		if err := service.Run(); err != nil {

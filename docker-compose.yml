@@ -11,6 +11,7 @@ services:
       - ./frontend/src:/cortito/frontend/src
       - ./frontend/public:/cortito/frontend/public
       - ./frontend/.env:/cortito/frontend/.env
+      - ./frontend/jsconfig.json:/cortito/frontend/jsconfig.json
     env_file:
       - .env
     depends_on:
@@ -46,6 +47,8 @@ services:
     volumes:
       - ./account:/cortito/account
       - ./common:/cortito/common
+      - ./jwt.pem.key:/cortito/account/jwt.pem.key
+      - ./jwt.pem.key.pub:/cortito/account/jwt.pem.key.pub
     env_file:
       - .env
     depends_on:
@@ -61,6 +64,8 @@ services:
     volumes:
       - ./shortener:/cortito/shortener
       - ./common:/cortito/common
+      - ./jwt.pem.key:/cortito/shortener/jwt.pem.key
+      - ./jwt.pem.key.pub:/cortito/shortener/jwt.pem.key.pub
     env_file:
       - .env
     depends_on:

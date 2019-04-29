@@ -9,6 +9,7 @@
 *.db
 
 .env*
+!.env.example
 
 config*.yml
 
@@ -23,3 +24,7 @@ jwt.pem*
 coverage.html
 
 frontend/node_modules
+
+docker-compose.production.yml
+
+README.html

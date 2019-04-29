@@ -16,6 +16,7 @@ import (
 	"common/config"
 	"common/connection"
 	"common/hashing"
+	commonWrapper "common/wrapper"
 
 	"account/handler"
 	"account/model"
@@ -53,9 +54,6 @@ func main() {
 		micro.RegisterInterval(10*time.Second),
 	)
 	service.Init()
-	_ = service.Server().Init(
-		server.Wait(true),
-	)
 
 	if err := config.SetConfigurationFile(configurationFile); err != nil {
 		log.Fatalf("error setting configuration file: %v", err)
@@ -98,6 +96,13 @@ func main() {
 	if err := proto.RegisterAuthHandler(service.Server(), authHandler); err != nil {
 		log.Fatalf("error registering auth handler: %v", err)
 	}
+
+	_ = service.Server().Init(
+		server.WrapHandler(
+			commonWrapper.NewAuthHandlerWrapper(authStrategy),
+		),
+		server.Wait(true),
+	)
 
 	go func() {
 		if err := service.Run(); err != nil {

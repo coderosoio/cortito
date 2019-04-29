@@ -3,10 +3,9 @@ package handler
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
-
-	"github.com/gin-gonic/gin"
 
 	shortenerProto "shortener/proto/shortener"
 
@@ -28,24 +27,24 @@ func (h *linkHandler) Create(ctx *gin.Context) {
 	req := &shortenerProto.CreateLinkRequest{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status":    http.StatusBadRequest,
-			"errors.js": err,
+			"status": http.StatusBadRequest,
+			"error":  err,
 		})
 		return
 	}
 	req.UserId = user.Id
 	if err := validateCreateLink(req); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status":    http.StatusBadRequest,
-			"errors.js": err,
+			"status": http.StatusBadRequest,
+			"error":  err,
 		})
 		return
 	}
 	res, err := h.linkService.CreateLink(ctx, req)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
-			"status":    http.StatusUnprocessableEntity,
-			"errors.js": err,
+			"status": http.StatusUnprocessableEntity,
+			"error":  err,
 		})
 		return
 	}
@@ -60,8 +59,8 @@ func (h *linkHandler) Index(ctx *gin.Context) {
 	res, err := h.linkService.ListLinks(ctx, req)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"status":    http.StatusInternalServerError,
-			"errors.js": err,
+			"status": http.StatusInternalServerError,
+			"error":  err,
 		})
 		return
 	}

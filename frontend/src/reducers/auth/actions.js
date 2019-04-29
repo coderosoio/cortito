@@ -145,7 +145,7 @@ export const signup = user => dispatch => {
       dispatch(clearAuthErrors())
       dispatch(signupSuccess(user))
 
-      history.push('/login')
+      history.replace('/login')
     })
     .catch(error => {
       const errors = responseErrors(error)

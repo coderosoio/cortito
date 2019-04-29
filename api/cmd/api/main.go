@@ -14,6 +14,7 @@ import (
 
 	accountProto "account/proto/account"
 	commonConfig "common/config"
+	commonWrapper "common/wrapper"
 	shortenerProto "shortener/proto/shortener"
 
 	"api/handler"
@@ -65,6 +66,10 @@ func main() {
 
 	accountService := config.Service["account"]
 	shortenerService := config.Service["shortener"]
+
+	_ = client.DefaultClient.Init(
+		client.WrapCall(commonWrapper.NewAuthCallWrapper()),
+	)
 
 	userService := accountProto.NewUserService(accountService.URL(), client.DefaultClient)
 	authService := accountProto.NewAuthService(accountService.URL(), client.DefaultClient)
