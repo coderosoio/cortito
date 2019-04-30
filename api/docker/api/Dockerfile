@@ -8,7 +8,7 @@ ENV GOOS=linux \
     CGO_ENABLED=0 \
     GO111MODULE=on
 
-RUN go build -ldflags="-w -s" -o bin/api cmd/api/*.go
+RUN go build -ldflags="-w -s" -mod=vendor -o bin/api cmd/api/*.go
 
 FROM alpine:latest
 
