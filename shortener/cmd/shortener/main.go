@@ -15,6 +15,7 @@ import (
 	"common/auth"
 	"common/config"
 	"common/connection"
+	"common/keyvalue"
 	commonWrapper "common/wrapper"
 	proto "shortener/proto/shortener"
 
@@ -72,8 +73,17 @@ func main() {
 		log.Fatalf("error getting auth strategy: %v", err)
 	}
 
+	keyValueStorage, err := keyvalue.NewKeyValueStorage("shortener")
+	if err != nil {
+		log.Fatalf("error getting key value storage: %v", err)
+	}
+	{
+		keyValueStorage = keyvalue.NamespaceMiddleware("shortener")(keyValueStorage)
+	}
+
 	options := option.NewOptions(
 		option.WithLinkRepository(linkRepository),
+		option.WithKeyValueStorage(keyValueStorage),
 	)
 
 	linkHandler := handler.NewLinkHandler(options)

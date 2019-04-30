@@ -1,9 +1,13 @@
 package option
 
-import "shortener/repository"
+import (
+	"common/keyvalue"
+	"shortener/repository"
+)
 
 type Options struct {
-	LinkRepository *repository.LinkRepository
+	LinkRepository  *repository.LinkRepository
+	KeyValueStorage keyvalue.Storage
 }
 
 type Option func(*Options)
@@ -11,6 +15,12 @@ type Option func(*Options)
 func WithLinkRepository(linkRepository *repository.LinkRepository) Option {
 	return func(options *Options) {
 		options.LinkRepository = linkRepository
+	}
+}
+
+func WithKeyValueStorage(storage keyvalue.Storage) Option {
+	return func(options *Options) {
+		options.KeyValueStorage = storage
 	}
 }
 

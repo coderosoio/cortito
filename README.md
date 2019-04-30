@@ -18,6 +18,8 @@ This is a simple URL shortener created using microservices.
 There are two simple micro services using [Go Micro](https://github.com/micro/go-micro). All microservices use Protocol Buffers for communication.
 The services are exposed using an API gateway also using [Micro API](https://micro.mu).
 
+![Cortito architecture](./Cortito.png)
+
 ### Common package
 
 All services use common functionality like database access, connection to other services, reading configuration, etc.
@@ -96,4 +98,4 @@ $ yarn start
 - Add WebSockets to the frontend.
 - Add information about the client following a link.
 - Add command-line clients for services.
-- Add caching for the shortened links.
+- ~~Add caching for the shortened links.~~

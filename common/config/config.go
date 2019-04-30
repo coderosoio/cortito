@@ -36,6 +36,7 @@ type Config struct {
 	Service  map[string]*Service
 	Session  *Session
 	HTTP     *HTTP
+	KeyValue map[string]*KeyValue
 }
 
 func init() {

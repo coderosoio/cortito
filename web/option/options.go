@@ -1,11 +1,13 @@
 package option
 
 import (
+	"common/keyvalue"
 	shortenerProto "shortener/proto/shortener"
 )
 
 type Options struct {
-	LinkService shortenerProto.LinkService
+	LinkService     shortenerProto.LinkService
+	KeyValueStorage keyvalue.Storage
 }
 
 type Option func(*Options)
@@ -13,6 +15,12 @@ type Option func(*Options)
 func WithLinkService(linkService shortenerProto.LinkService) Option {
 	return func(options *Options) {
 		options.LinkService = linkService
+	}
+}
+
+func WithKeyValueStorage(storage keyvalue.Storage) Option {
+	return func(options *Options) {
+		options.KeyValueStorage = storage
 	}
 }
 

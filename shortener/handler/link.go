@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"common/keyvalue"
 	"context"
+	"log"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation"
@@ -13,12 +15,14 @@ import (
 )
 
 type linkHandler struct {
-	linkRepository *repository.LinkRepository
+	linkRepository  *repository.LinkRepository
+	keyValueStorage keyvalue.Storage
 }
 
 func NewLinkHandler(options *option.Options) proto.LinkHandler {
 	return &linkHandler{
-		linkRepository: options.LinkRepository,
+		linkRepository:  options.LinkRepository,
+		keyValueStorage: options.KeyValueStorage,
 	}
 }
 
@@ -46,6 +50,11 @@ func (h *linkHandler) CreateLink(ctx context.Context, req *proto.CreateLinkReque
 	res.CreatedAt = link.CreatedAt.Format(time.RFC3339)
 	res.UpdatedAt = link.UpdatedAt.Format(time.RFC3339)
 	res.LastVisit = ""
+	go func() {
+		if err := h.keyValueStorage.Set(link.Hash, link.URL); err != nil {
+			log.Printf("error saving link hash to key value storage")
+		}
+	}()
 	return nil
 }
 

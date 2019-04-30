@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"common/keyvalue"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,12 +13,14 @@ import (
 )
 
 type linkHandler struct {
-	linkService shortenerProto.LinkService
+	linkService     shortenerProto.LinkService
+	keyValueStorage keyvalue.Storage
 }
 
 func NewLinkHandler(options *option.Options) *linkHandler {
 	return &linkHandler{
-		linkService: options.LinkService,
+		linkService:     options.LinkService,
+		keyValueStorage: options.KeyValueStorage,
 	}
 }
 
@@ -25,15 +29,25 @@ func (h *linkHandler) Visit(ctx *gin.Context) {
 	req := &shortenerProto.LinkRequest{
 		Hash: hash,
 	}
-	res, err := h.linkService.FindLink(ctx, req)
+	url, err := h.keyValueStorage.Get(hash, "")
 	if err != nil {
-		ctx.String(http.StatusNotFound, err.Error())
-		return
-	}
-	if _, err = h.linkService.IncreaseVisit(ctx, req); err != nil {
 		ctx.String(http.StatusInternalServerError, err.Error())
 		return
 	}
+	if len(url) == 0 {
+		res, err := h.linkService.FindLink(ctx, req)
+		if err != nil {
+			ctx.String(http.StatusNotFound, err.Error())
+			return
+		}
+		url = res.Url
+	}
 	ctx.Header("Cache-Control", "no-cache")
-	ctx.Redirect(http.StatusMovedPermanently, res.Url)
+	go func() {
+		if _, err = h.linkService.IncreaseVisit(ctx, req); err != nil {
+			log.Printf("error increasing link visit: %v", err)
+		}
+	}()
+
+	ctx.Redirect(http.StatusMovedPermanently, url)
 }

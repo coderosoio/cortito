@@ -1,6 +1,7 @@
 package main
 
 import (
+	"common/keyvalue"
 	"flag"
 	"fmt"
 	"log"
@@ -46,8 +47,15 @@ func main() {
 
 	linkService := shortenerProto.NewLinkService(shortenerService.URL(), service.Client())
 
+	keyValueStorage, err := keyvalue.NewKeyValueStorage("shortener")
+	if err != nil {
+		log.Fatalf("error getting key value storage: %v", err)
+	}
+	keyValueStorage = keyvalue.NamespaceMiddleware("shortener")(keyValueStorage)
+
 	options := option.NewOptions(
 		option.WithLinkService(linkService),
+		option.WithKeyValueStorage(keyValueStorage),
 	)
 
 	router, err := handler.NewRouter(options)

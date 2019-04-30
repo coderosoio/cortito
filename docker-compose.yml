@@ -146,6 +146,18 @@ services:
     depends_on:
       - consul
 
+  redis:
+    image: redis:alpine
+    hostname: redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}:-}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    env_file:
+      - .env
+
 volumes:
   postgres-account:
   postgres-shortener:
+  redis-data:
