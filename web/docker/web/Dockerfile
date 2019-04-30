@@ -1,4 +1,15 @@
-FROM golang:latest AS builder
+FROM golang:latest AS base
+
+COPY ./common /cortito/common
+COPY ./shortener /cortito/shortener
+COPY ./web/go.mod /cortito/web/
+COPY ./web/go.sum /cortito/web/
+
+WORKDIR /cortito/web
+
+RUN go mod download
+
+FROM base AS builder
 
 COPY . /cortito
 

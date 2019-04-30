@@ -10,12 +10,12 @@ readonly app_user="core@coderoso.io"
 clear
 
 echo "Building app and images..."
-docker rmi -f coderoso/cortito_nginx 2>/dev/null
-docker rmi -f coderoso/cortito_account:latest 2>/dev/null
-docker rmi -f coderoso/cortito_shortener:latest 2>/dev/null
-docker rmi -f coderoso/cortito_api:latest 2>/dev/null
-docker rmi -f coderoso/cortito_frontend:latest 2>/dev/null
-docker rmi -f coderoso/cortito_web:latest 2>/dev/null
+# docker rmi -f coderoso/cortito_nginx 2>/dev/null
+# docker rmi -f coderoso/cortito_account:latest 2>/dev/null
+# docker rmi -f coderoso/cortito_shortener:latest 2>/dev/null
+# docker rmi -f coderoso/cortito_api:latest 2>/dev/null
+# docker rmi -f coderoso/cortito_frontend:latest 2>/dev/null
+# docker rmi -f coderoso/cortito_web:latest 2>/dev/null
 
 docker build -t coderoso/cortito_nginx -f ./docker/nginx/Dockerfile .
 docker build -t coderoso/cortito_account -f ./account/docker/account/Dockerfile .
@@ -34,7 +34,7 @@ docker save coderoso/cortito_nginx \
 
 echo "Uploading docker images..."
 scp -i ${app_key} ${bzip_file} docker-compose.production.yml .env.production ${app_user}:/home/core/apps/cortito
-scp -i ${app_key} ./account/config.yml ./account/config.production.yml ${app_user}:/home/core/apps/cortito/acount/
+scp -i ${app_key} ./account/config.yml ./account/config.production.yml ${app_user}:/home/core/apps/cortito/account/
 scp -i ${app_key} ./shortener/config.yml ./shortener/config.production.yml ${app_user}:/home/core/apps/cortito/shortener/
 scp -i ${app_key} ./api/config.yml ./api/config.production.yml ${app_user}:/home/core/apps/cortito/api/
 scp -i ${app_key} ./web/config.yml ./web/config.production.yml ${app_user}:/home/core/apps/cortito/web/
@@ -42,10 +42,10 @@ scp -i ${app_key} ./web/config.yml ./web/config.production.yml ${app_user}:/home
 ssh -T -i ${app_key} ${app_user} << ENDSSH
 cd /home/core/apps/cortito
 
-cp docker-compose.production.yml docker-compose.yml
-cp .env.production .env
+mv docker-compose.production.yml docker-compose.yml
+mv .env.production .env
 
-docker rmi -f coderoso/cortito_nginx 2>/dev/null
+docker rmi -f coderoso/cortito_nginx:latest 2>/dev/null
 docker rmi -f coderoso/cortito_account:latest 2>/dev/null
 docker rmi -f coderoso/cortito_shortener:latest 2>/dev/null
 docker rmi -f coderoso/cortito_api:latest 2>/dev/null

@@ -10,5 +10,5 @@ RUN yarn build
 
 FROM alpine:latest
 
-COPY --from=builder /cortito/frontend/build /cortito/frontend
+COPY --from=builder /cortito/frontend/build /cortito/
 

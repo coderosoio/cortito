@@ -10,7 +10,7 @@ services:
     depends_on:
       - cortito-api
     volumes:
-      - frontend:/cortito/frontend
+      - frontend:/cortito
 
   api:
     image: coderoso/cortito_api
@@ -34,6 +34,8 @@ services:
     volumes:
       - ./account/config.yml:/cortito/config.yml
       - ./account/config.${APP_ENV:-development}.yml:/cortito/config.${APP_ENV:-development}.yml
+      - ./account/jwt.pem.key:/cortito/jwt.pem.key
+      - ./account/jwt.pem.key.pub:/cortito/jwt.pem.key.pub
     env_file:
       - .env
     depends_on:
@@ -47,6 +49,8 @@ services:
     volumes:
       - ./shortener/config.yml:/cortito/config.yml
       - ./shortener/config.${APP_ENV:-development}.yml:/cortito/config.${APP_ENV:-development}.yml
+      - ./account/jwt.pem.key:/cortito/jwt.pem.key
+      - ./account/jwt.pem.key.pub:/cortito/jwt.pem.key.pub
     env_file:
       - .env
     depends_on:
@@ -60,7 +64,8 @@ services:
     hostname: cortito
     restart: always
     volumes:
-      - .:/cortito
+      - ./cortito/config.yml:/cortito/config.yml
+      - ./cortito/config.${APP_ENV:-development}.yml:/cortito/config.${APP_ENV:-development}.yml
     env_file:
       - .env
     depends_on:
@@ -72,10 +77,10 @@ services:
     container_name: api-nginx
     restart: always
     volumes:
-      - frontend:/cortito/frontend
+      - frontend:/cortito
     ports:
-      - 80:80
-      - 443:443
+      - 8080:80
+      - 8443:443
     depends_on:
       - cortito-api
 
