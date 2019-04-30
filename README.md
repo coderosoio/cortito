@@ -93,6 +93,7 @@ $ yarn start
 
 ### TODO
 
+- Setup CI/CD.
 - Add support for private links
 - Generate shortened links using message queue.
 - Add WebSockets to the frontend.
