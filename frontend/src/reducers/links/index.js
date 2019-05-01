@@ -28,7 +28,7 @@ export default (state = initialState, action) => {
         .setIn(['form', 'alertVisible'], false)
         .setIn(['form', 'error'], null)
     case LINKS_SUCCESS: {
-      const { links } = action.payload
+      const { links } = action.payload || []
       return state.setIn(['form', 'isFetching'], false)
         .setIn(['form', 'disabled'], false)
         .setIn(['form', 'alertVisible'], false)

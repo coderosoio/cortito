@@ -77,8 +77,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("error getting key value storage: %v", err)
 	}
-	{
-		keyValueStorage = keyvalue.NamespaceMiddleware("shortener")(keyValueStorage)
+	keyValueStorage = keyvalue.NamespaceMiddleware("shortener")(keyValueStorage)
+	if err := keyValueStorage.Connect(); err != nil {
+		log.Fatalf("error connecting to key value storage: %v", err)
 	}
 
 	options := option.NewOptions(

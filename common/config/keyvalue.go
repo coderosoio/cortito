@@ -20,17 +20,12 @@ type KeyValue struct {
 	Params   map[string]interface{}
 }
 
-func (k *KeyValue) URL(withAdapter bool) string {
+func (s *KeyValue) URL(withAdapter bool) string {
 	var buffer bytes.Buffer
 
 	if withAdapter {
-		buffer.WriteString(fmt.Sprintf("%s://", k.Adapter))
+		buffer.WriteString(fmt.Sprintf("%s://", s.Adapter))
 	}
-	if len(k.Username) > 0 {
-		buffer.WriteString(k.Username)
-	}
-	if len(k.Password) > 0 {
-		buffer.WriteString(fmt.Sprintf(":%s", k.Password))
-	}
+	buffer.WriteString(fmt.Sprintf("%s:%d", s.Hostname, s.Port))
 	return buffer.String()
 }

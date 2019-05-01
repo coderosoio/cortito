@@ -127,8 +127,9 @@ export const getToken = () => dispatch => {
   if (!token) {
     dispatch(tokenFailure('You are not logged in'))
     const location = history.location.pathname
-    if (location !== '/signup' || location !== '/login') {
-      history.replace('/login')
+    console.log(location)
+    if (!/\/signup/.test(location) && !/\/login/.test(location)) {
+      window.location.href = '/login'
     }
   } else {
     const user = authService.getCurrentUser()
@@ -145,7 +146,7 @@ export const signup = user => dispatch => {
       dispatch(clearAuthErrors())
       dispatch(signupSuccess(user))
 
-      history.replace('/login')
+      window.location.href = '/login'
     })
     .catch(error => {
       const errors = responseErrors(error)
@@ -165,7 +166,7 @@ export const login = (email, password) => dispatch => {
       dispatch(clearAuthErrors())
       dispatch(loginSuccess(token, user))
 
-      history.replace('/')
+      window.location.href = '/'
     })
     .catch(error => {
       const errors = responseErrors(error)
@@ -187,6 +188,6 @@ export const logout = () => dispatch => {
       authService.setCurrentToken(null)
       authService.setCurrentUser(null)
 
-      history.replace('/')
+      window.location.href = '/'
     })
 }

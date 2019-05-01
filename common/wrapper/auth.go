@@ -22,6 +22,8 @@ var (
 		"User.CreateUser",
 		"Auth.CreateToken",
 		// "Auth.VerifyToken",
+		"Link.FindLink",
+		"Link.IncreaseVisit",
 	}
 )
 

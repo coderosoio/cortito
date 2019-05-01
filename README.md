@@ -93,6 +93,7 @@ $ yarn start
 
 ### TODO
 
+- Check for collisions more extensively.
 - Setup CI/CD.
 - Add support for private links
 - Generate shortened links using message queue.

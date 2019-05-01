@@ -20,6 +20,6 @@ func getRedisConnection(settings *cfg.KeyValue) (conn *redis.Client, err error) 
 	if db, found := settings.Params["database"]; found {
 		database = fmt.Sprintf("%d", db)
 	}
-	_, err = conn.Do("SELET", database).Result()
+	_, err = conn.Do("SELECT", database).Result()
 	return
 }
